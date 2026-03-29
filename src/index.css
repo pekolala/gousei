@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap');
 
 :root {
-  --bg-primary: #f2f5f8;
+  --bg-primary: #f8fafc;
   --bg-secondary: #ffffff;
   --bg-card: #ffffff;
-  --border-color: #cbd5e1;
+  --border-color: #e2e8f0;
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
   --accent: #2563eb;
   --accent-hover: #1d4ed8;
   --success: #16a34a;
-  --panel-radius: 6px;
+  --panel-radius: 4px;
   --transition: all 0.15s ease;
 }
 
@@ -26,123 +26,125 @@ body {
   background: var(--bg-primary);
   color: var(--text-primary);
   height: 100vh;
-  overflow: hidden; /* スクロールを原則禁止に */
-  font-size: 13px; /* 小さめのフォント */
-  line-height: 1.4;
+  width: 100vw;
+  overflow: hidden; /* 横スクロール禁止 */
+  font-size: 12px; /* さらに少し小さく */
 }
 
 #root {
   height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
 }
 
 .app {
   height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
 }
 
-/* ========== Header (極限まで細く) ========== */
+/* ========== Header (よりスリムに) ========== */
 .app-header.compact {
-  height: 36px;
-  padding: 0 16px;
+  height: 32px;
+  padding: 0 12px;
   background: #ffffff;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
   flex-shrink: 0;
 }
 
 .app-header h1 {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 800;
   color: var(--accent);
 }
 
-/* ========== Main Layout ========== */
+/* ========== Main Layout (横幅フル活用) ========== */
 .main-layout.compact {
   flex: 1;
   display: flex;
-  padding: 8px;
-  gap: 8px;
-  overflow: hidden; /* 子要素にてスクロール制御 */
+  padding: 6px;
+  gap: 6px;
+  width: 100%;
+  overflow: hidden;
 }
 
-/* ========== Panels (余白を最小限に) ========== */
+/* ========== Panels ========== */
 .panel.compact {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--panel-radius);
-  padding: 8px;
-  margin-bottom: 8px;
+  padding: 6px;
+  margin-bottom: 6px;
 }
 
 .panel-title {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   color: var(--text-muted);
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  text-transform: uppercase;
-  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 4px;
 }
 
-/* ========== Sidebars (スリム化 & 個別スクロール) ========== */
+/* ========== Sidebars (幅をより細っそりと) ========== */
 .sidebar-left,
 .sidebar-right {
-  width: 210px;
+  width: 190px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  overflow-y: auto; /* サイドバー内のみスクロール */
-  padding-right: 4px;
+  overflow-y: auto;
+  padding-right: 2px;
 }
 
-/* ========== Canvas Area (画面に収まるよう自動縮小) ========== */
+/* ========== Canvas Area (横幅に合わせて縮小) ========== */
 .canvas-area {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #e2e8f0;
-  border-radius: 8px;
-  padding: 10px;
+  background: #cbd5e1; /* グレーの部分 */
+  border-radius: 4px;
+  padding: 6px; /* パディングを削減 */
   overflow: hidden;
+  min-width: 0; /* フレックスアイテムの縮小を許可 */
 }
 
 .canvas-container {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
+  width: 100%;
+  justify-content: center;
 }
 
 .canvas-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-shrink: 1; /* 横幅に合わせて縮むように */
+  min-width: 0;
 }
 
 .canvas-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  color: #64748b;
-  margin-bottom: 4px;
+  color: #475569;
+  margin-bottom: 2px;
 }
 
 .canvas-frame {
-  /* 画面の高さに応じて動的に縮小するように設定 (100vh - ヘッダー - 余白など) */
-  width: min(480px, 45vh); 
-  height: min(480px, 45vh);
+  /* 幅を「190pxのサイドバー2つ分を除いた残り」の半分以下に抑える */
+  /* また、高さも考慮して 42vh 程度に制限 */
+  width: min(380px, 42vh, 28vw); 
+  height: min(380px, 42vh, 28vw);
   background: #fff;
   border: 1px solid #fff;
-  border-radius: 4px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .canvas-frame canvas {
@@ -151,73 +153,31 @@ body {
 }
 
 /* ========== Buttons ========== */
-.btn {
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: var(--transition);
-}
+.btn { padding: 4px 8px; font-size: 11px; }
+.btn-primary { background: var(--accent); color: white; border: none; }
 
-.btn-primary {
-  background: var(--accent);
-  color: white;
-  border: none;
-}
+.btn-save-large { width: 100%; padding: 8px; font-size: 13px; margin-top: 4px; }
+.btn-apply { padding: 3px; font-size: 10px; }
 
-.btn-save-large {
-  width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  margin-top: 6px;
-}
+.btn-icon { width: 30px; height: 30px; font-size: 14px; }
 
-.btn-apply {
-  width: 100%;
-  margin-top: 4px;
-  padding: 4px;
-  font-size: 11px;
-}
-
-.btn-icon { width: 32px; height: 32px; font-size: 16px; }
-
-/* ========== Toggle Switch  ========== */
-.toggle-switch {
-  width: 36px; height: 20px;
-}
-.toggle-slider:before { height: 16px; width: 16px; left: 2px; bottom: 2px; }
-input:checked + .toggle-slider:before { transform: translateX(16px); }
-
-/* ========== DPAD (もっとコンパクトに) ========== */
+/* ========== DPAD ========== */
 .dpad {
-  grid-template-columns: repeat(3, 32px);
-  grid-template-rows: repeat(3, 32px);
+  grid-template-columns: repeat(3, 30px);
+  grid-template-rows: repeat(3, 30px);
   gap: 2px;
 }
-.offset-display { font-size: 11px; margin-top: 4px; }
+.offset-display { font-size: 10px; line-height: 1.2; }
 
-/* Forms (入力をスリムに) */
-.form-input, .form-select {
-  padding: 6px;
-  font-size: 13px;
-}
-.form-label { font-size: 10px; }
-.form-group.compact { margin-bottom: 6px; }
+/* Forms */
+.form-input, .form-select { padding: 4px; font-size: 12px; }
+.form-label { font-size: 9px; line-height: 1; }
 
-/* Save Panel */
-.radio-pill { padding: 4px; font-size: 11px; }
-.save-hint { font-size: 10px; margin-top: 4px; }
+/* Toggle */
+.toggle-switch { width: 32px; height: 18px; }
+.toggle-slider:before { height: 14px; width: 14px; left: 2px; bottom: 2px; }
+input:checked + .toggle-slider:before { transform: translateX(14px); }
 
-/* Checkerboard */
-.checkerboard-bg { background-size: 12px 12px; }
-
-/* 極低解像度対応 */
-@media (max-height: 600px) {
-  .canvas-frame { width: 300px; height: 300px; }
-  .panel.compact { padding: 4px; }
-  .sidebar-left, .sidebar-right { width: 180px; }
-}
-@media (max-width: 1200px) {
-  .main-layout.compact { overflow-x: auto; }
-}
+/* スクロールバーの非表示（スッキリさせるため） */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
