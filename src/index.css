@@ -12,7 +12,7 @@
   --accent-hover: #1d4ed8;
   --success: #16a34a;
   --panel-radius: 4px;
-  --transition: all 0.15s ease;
+  --transition: all 0.1s ease;
 }
 
 * {
@@ -27,25 +27,23 @@ body {
   color: var(--text-primary);
   height: 100vh;
   width: 100vw;
-  overflow: hidden; /* 横スクロール禁止 */
-  font-size: 12px; /* さらに少し小さく */
+  overflow: auto; /* 全体のスクロールは許可へ（480px x 2を守るため） */
+  font-size: 12px;
 }
 
 #root {
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 .app {
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* ========== Header (よりスリムに) ========== */
+/* ========== Header ========== */
 .app-header.compact {
   height: 32px;
   padding: 0 12px;
@@ -63,14 +61,13 @@ body {
   color: var(--accent);
 }
 
-/* ========== Main Layout (横幅フル活用) ========== */
+/* ========== Main Layout ========== */
 .main-layout.compact {
   flex: 1;
   display: flex;
-  padding: 6px;
-  gap: 6px;
-  width: 100%;
-  overflow: hidden;
+  padding: 4px;
+  gap: 4px;
+  /* 横幅が足りない場合はスクロールが発生しますが、中央のグレーを削ります */
 }
 
 /* ========== Panels ========== */
@@ -79,7 +76,7 @@ body {
   border: 1px solid var(--border-color);
   border-radius: var(--panel-radius);
   padding: 6px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .panel-title {
@@ -89,62 +86,56 @@ body {
   margin-bottom: 4px;
 }
 
-/* ========== Sidebars (幅をより細っそりと) ========== */
+/* ========== Sidebars (幅を固定) ========== */
 .sidebar-left,
 .sidebar-right {
-  width: 190px;
+  width: 200px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  padding-right: 2px;
 }
 
-/* ========== Canvas Area (横幅に合わせて縮小) ========== */
+/* ========== Canvas Area (グレーの遊びを無くす) ========== */
 .canvas-area {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #cbd5e1; /* グレーの部分 */
-  border-radius: 4px;
-  padding: 6px; /* パディングを削減 */
-  overflow: hidden;
-  min-width: 0; /* フレックスアイテムの縮小を許可 */
+  background: #cbd5e1; /* 背景色は維持しつつ */
+  padding: 2px; /* 余白をほぼゼロに（2pxだけ残す） */
+  min-width: 0;
 }
 
 .canvas-container {
   display: flex;
-  gap: 8px;
+  gap: 4px; /* キャンバス同士の間隔を最小限に */
   align-items: center;
-  width: 100%;
-  justify-content: center;
 }
 
 .canvas-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-shrink: 1; /* 横幅に合わせて縮むように */
-  min-width: 0;
 }
 
 .canvas-label {
   font-size: 10px;
   font-weight: 700;
   color: #475569;
+  background: rgba(255,255,255,0.8);
+  padding: 1px 6px;
+  border-radius: 10px;
   margin-bottom: 2px;
 }
 
 .canvas-frame {
-  /* 幅を「190pxのサイドバー2つ分を除いた残り」の半分以下に抑える */
-  /* また、高さも考慮して 42vh 程度に制限 */
-  width: min(380px, 42vh, 28vw); 
-  height: min(380px, 42vh, 28vw);
+  /* キャンバスサイズを元に戻す (480px、または高さに応じて調整) */
+  width: min(512px, 46vh); 
+  height: min(512px, 46vh);
   background: #fff;
   border: 1px solid #fff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .canvas-frame canvas {
@@ -154,30 +145,24 @@ body {
 
 /* ========== Buttons ========== */
 .btn { padding: 4px 8px; font-size: 11px; }
-.btn-primary { background: var(--accent); color: white; border: none; }
 
-.btn-save-large { width: 100%; padding: 8px; font-size: 13px; margin-top: 4px; }
-.btn-apply { padding: 3px; font-size: 10px; }
+.btn-save-large { width: 100%; padding: 8px; font-size: 14px; font-weight: 800; cursor: pointer; }
 
-.btn-icon { width: 30px; height: 30px; font-size: 14px; }
-
-/* ========== DPAD ========== */
+/* DPAD */
 .dpad {
-  grid-template-columns: repeat(3, 30px);
-  grid-template-rows: repeat(3, 30px);
+  grid-template-columns: repeat(3, 32px);
+  grid-template-rows: repeat(3, 32px);
   gap: 2px;
 }
-.offset-display { font-size: 10px; line-height: 1.2; }
-
-/* Forms */
-.form-input, .form-select { padding: 4px; font-size: 12px; }
-.form-label { font-size: 9px; line-height: 1; }
+.btn-icon { width: 32px; height: 32px; font-size: 14px; }
 
 /* Toggle */
-.toggle-switch { width: 32px; height: 18px; }
+.toggle-switch { width: 34px; height: 18px; }
 .toggle-slider:before { height: 14px; width: 14px; left: 2px; bottom: 2px; }
-input:checked + .toggle-slider:before { transform: translateX(14px); }
+input:checked + .toggle-slider:before { transform: translateX(16px); }
 
-/* スクロールバーの非表示（スッキリさせるため） */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+/* Forms */
+.form-input, .form-select { padding: 4px; font-size: 13px; }
+
+/* Checkerboard */
+.checkerboard-bg { background-size: 12px 12px; }
