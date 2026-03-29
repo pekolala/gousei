@@ -8,7 +8,7 @@ const EditCanvas = forwardRef(function EditCanvas({
   const undoStack = useRef([]);
   const [cursorPos, setCursorPos] = useState(null);
 
-  // Expose canvas ref to parent
+  // Expose canvas element directly
   useImperativeHandle(ref, () => canvasRef.current);
 
   const drawText = useCallback(() => {
@@ -38,6 +38,7 @@ const EditCanvas = forwardRef(function EditCanvas({
 
   const getCanvasPos = (e) => {
     const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
@@ -50,14 +51,10 @@ const EditCanvas = forwardRef(function EditCanvas({
   const handleMouseDown = (e) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-
-    // Save current state for undo
     const imageData = ctx.getImageData(0, 0, 512, 512);
     undoStack.current.push(imageData);
     if (onUndoStackChange) onUndoStackChange(undoStack.current.length);
-
     isDrawing.current = true;
-
     const pos = getCanvasPos(e);
     erase(pos.x, pos.y);
   };
@@ -65,19 +62,12 @@ const EditCanvas = forwardRef(function EditCanvas({
   const handleMouseMove = (e) => {
     const pos = getCanvasPos(e);
     setCursorPos(pos);
-
     if (!isDrawing.current) return;
     erase(pos.x, pos.y);
   };
 
-  const handleMouseUp = () => {
-    isDrawing.current = false;
-  };
-
-  const handleMouseLeave = () => {
-    isDrawing.current = false;
-    setCursorPos(null);
-  };
+  const handleMouseUp = () => { isDrawing.current = false; };
+  const handleMouseLeave = () => { isDrawing.current = false; setCursorPos(null); };
 
   const erase = (x, y) => {
     const canvas = canvasRef.current;
@@ -90,7 +80,6 @@ const EditCanvas = forwardRef(function EditCanvas({
     ctx.restore();
   };
 
-  // Undo function - exposed via window for parent access
   const undo = useCallback(() => {
     if (undoStack.current.length === 0) return;
     const canvas = canvasRef.current;
@@ -100,40 +89,32 @@ const EditCanvas = forwardRef(function EditCanvas({
     if (onUndoStackChange) onUndoStackChange(undoStack.current.length);
   }, [onUndoStackChange]);
 
-  // Expose undo to parent
   useEffect(() => {
     window.__editCanvasUndo = undo;
     return () => { delete window.__editCanvasUndo; };
   }, [undo]);
 
   return (
-    <div className="canvas-wrapper">
-      <div className="canvas-label">
-        加工キャンバス
-        <div className="canvas-label-sub">（編集専用・消しゴム）</div>
-      </div>
-      <div
-        className="canvas-frame checkerboard-bg editable"
-        style={{ position: 'relative' }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
-      >
-        <canvas ref={canvasRef} width={512} height={512} />
-        {cursorPos && (
-          <div
-            className="eraser-cursor-hint"
-            style={{
-              left: cursorPos.x,
-              top: cursorPos.y,
-              width: eraserSize,
-              height: eraserSize,
-            }}
-          />
-        )}
-      </div>
-      <div className="canvas-size-label">512×512 px</div>
+    <div
+      className="canvas-frame checkerboard-bg editable"
+      style={{ position: 'relative' }}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
+    >
+      <canvas ref={canvasRef} width={512} height={512} />
+      {cursorPos && (
+        <div
+          className="eraser-cursor-hint"
+          style={{
+            left: cursorPos.x,
+            top: cursorPos.y,
+            width: eraserSize,
+            height: eraserSize,
+          }}
+        />
+      )}
     </div>
   );
 });

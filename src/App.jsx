@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import CompositionCanvas from './components/CompositionCanvas';
 import EditCanvas from './components/EditCanvas';
 import TextInputPanel from './components/TextInputPanel';
@@ -31,8 +31,8 @@ function App() {
   const editCanvasRef = useRef(null);
 
   const handleUndo = () => {
-    if (editCanvasRef.current) {
-      editCanvasRef.current.undo();
+    if (editCanvasRef.current && typeof window.__editCanvasUndo === 'function') {
+      window.__editCanvasUndo();
     }
   };
 
@@ -79,10 +79,9 @@ function App() {
             fontSize={fontSize}
             onFontSizeChange={setFontSize}
             localFonts={localFonts}
-            onLoadFonts={handleLoadLocalFonts} // ここで関数を渡す
+            onLoadFonts={handleLoadLocalFonts}
             previewChar={baseText}
           />
-
           <SavePanel
             editCanvasRef={editCanvasRef}
             mergeEnabled={mergeEnabled}
@@ -94,11 +93,11 @@ function App() {
           />
         </div>
 
-        {/* 中央: キャンバスエリア */}
+        {/* 中央: キャンバスエリア (グレー部分の余白を極限まで削る) */}
         <div className="canvas-area">
           <div className="canvas-container">
             <div className="canvas-wrapper">
-              <div className="canvas-label">合成結果（閲覧用）</div>
+              <div className="canvas-label">合成プレビュー (左)</div>
               <CompositionCanvas
                 baseText={baseText}
                 font={font}
@@ -110,7 +109,7 @@ function App() {
               />
             </div>
             <div className="canvas-wrapper">
-              <div className="canvas-label">部品を加工（右）</div>
+              <div className="canvas-label">部品を加工 (右)</div>
               <EditCanvas
                 ref={editCanvasRef}
                 partText={partText}
@@ -123,7 +122,7 @@ function App() {
           </div>
         </div>
 
-        {/* 右サイドバー: 部品設定と調整 */}
+        {/* 右サイドバー */}
         <div className="sidebar-right">
           <TextInputPanel
             label="2. 部品用の文字 (右)"
@@ -137,14 +136,12 @@ function App() {
             synced={true}
             previewChar={partText}
           />
-
           <EraserControls
             eraserSize={eraserSize}
             onEraserSizeChange={setEraserSize}
             onUndo={handleUndo}
             undoCount={undoCount}
           />
-
           <MergeControls
             mergeEnabled={mergeEnabled}
             onMergeToggle={setMergeEnabled}

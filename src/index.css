@@ -1,25 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap');
 
 :root {
-  --bg-primary: #f8fafc;
+  --bg-primary: #f0f2f5;
   --bg-secondary: #ffffff;
   --bg-card: #ffffff;
-  --border-color: #e2e8f0;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --border-color: #d1d5db;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
   --accent: #2563eb;
   --accent-hover: #1d4ed8;
-  --success: #16a34a;
+  --success: #10b981;
   --panel-radius: 4px;
-  --transition: all 0.1s ease;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   font-family: 'Inter', 'Noto Sans JP', sans-serif;
@@ -27,90 +22,64 @@ body {
   color: var(--text-primary);
   height: 100vh;
   width: 100vw;
-  overflow: auto; /* 全体のスクロールは許可へ（480px x 2を守るため） */
-  font-size: 12px;
+  overflow: auto; /* 万が一のためのスクロール */
+  font-size: 11px; /* 全体的に小さく */
 }
 
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+#root, .app { height: 100vh; display: flex; flex-direction: column; }
 
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ========== Header ========== */
 .app-header.compact {
-  height: 32px;
-  padding: 0 12px;
-  background: #ffffff;
+  height: 28px;
+  padding: 0 10px;
+  background: white;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
 }
+.app-header h1 { font-size: 0.9rem; font-weight: 800; color: var(--accent); }
 
-.app-header h1 {
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: var(--accent);
-}
-
-/* ========== Main Layout ========== */
 .main-layout.compact {
   flex: 1;
   display: flex;
-  padding: 4px;
-  gap: 4px;
-  /* 横幅が足りない場合はスクロールが発生しますが、中央のグレーを削ります */
+  padding: 2px;
+  gap: 2px;
+  overflow: hidden;
 }
 
-/* ========== Panels ========== */
-.panel.compact {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--panel-radius);
-  padding: 6px;
-  margin-bottom: 4px;
-}
-
-.panel-title {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--text-muted);
-  margin-bottom: 4px;
-}
-
-/* ========== Sidebars (幅を固定) ========== */
-.sidebar-left,
-.sidebar-right {
-  width: 200px;
+/* ========== Sidebar ========== */
+.sidebar-left, .sidebar-right {
+  width: 195px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  gap: 2px;
 }
 
-/* ========== Canvas Area (グレーの遊びを無くす) ========== */
+.panel.compact {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: var(--panel-radius);
+  padding: 4px 6px;
+}
+.panel-title { font-size: 9px; font-weight: 800; color: var(--text-muted); margin-bottom: 2px; }
+
+/* ========== Canvas Area (中央のグレー部分を極限までコンパクトに) ========== */
 .canvas-area {
   flex: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #cbd5e1; /* 背景色は維持しつつ */
-  padding: 2px; /* 余白をほぼゼロに（2pxだけ残す） */
-  min-width: 0;
+  background: #94a3b8; /* 少し濃いグレーで境界を明確に */
+  padding: 0; /* 余白ゼロ */
+  overflow: hidden;
 }
 
 .canvas-container {
   display: flex;
-  gap: 4px; /* キャンバス同士の間隔を最小限に */
-  align-items: center;
+  gap: 2px; /* キャンバス間の隙間を最小限に */
+  align-items: flex-start; /* 上端を揃える */
 }
 
 .canvas-wrapper {
@@ -121,48 +90,37 @@ body {
 
 .canvas-label {
   font-size: 10px;
-  font-weight: 700;
-  color: #475569;
-  background: rgba(255,255,255,0.8);
-  padding: 1px 6px;
-  border-radius: 10px;
+  font-weight: 800;
+  color: white;
+  background: rgba(0,0,0,0.5);
+  padding: 0 8px;
+  border-radius: 4px;
   margin-bottom: 2px;
 }
 
 .canvas-frame {
-  /* キャンバスサイズを元に戻す (480px、または高さに応じて調整) */
-  width: min(512px, 46vh); 
-  height: min(512px, 46vh);
-  background: #fff;
+  width: min(512px, 47vh, 29vw);
+  height: min(512px, 47vh, 29vw);
+  background: white;
   border: 1px solid #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 10px rgba(0,0,0,0.2);
 }
+.canvas-frame canvas { width: 100%; height: 100%; display: block; }
 
-.canvas-frame canvas {
-  width: 100%;
-  height: 100%;
-}
+/* ========== Elements ========== */
+.btn { padding: 4px 6px; font-size: 11px; border-radius: 4px; border: 1px solid #ccc; background: #f9f9f9; }
+.btn-primary { background: var(--accent); color: white; border: none; }
+.btn-save-large { width: 100%; padding: 8px; font-size: 13px; font-weight: 800; }
 
-/* ========== Buttons ========== */
-.btn { padding: 4px 8px; font-size: 11px; }
+.dpad { grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px); gap: 1px; }
+.btn-icon { width: 30px; height: 30px; }
 
-.btn-save-large { width: 100%; padding: 8px; font-size: 14px; font-weight: 800; cursor: pointer; }
+.form-group.compact { margin-bottom: 4px; }
+.form-label { font-size: 9px; margin-bottom: 1px; }
+.form-input, .form-select { padding: 3px; font-size: 12px; }
 
-/* DPAD */
-.dpad {
-  grid-template-columns: repeat(3, 32px);
-  grid-template-rows: repeat(3, 32px);
-  gap: 2px;
-}
-.btn-icon { width: 32px; height: 32px; font-size: 14px; }
-
-/* Toggle */
-.toggle-switch { width: 34px; height: 18px; }
+.toggle-switch { width: 32px; height: 18px; }
 .toggle-slider:before { height: 14px; width: 14px; left: 2px; bottom: 2px; }
-input:checked + .toggle-slider:before { transform: translateX(16px); }
 
-/* Forms */
-.form-input, .form-select { padding: 4px; font-size: 13px; }
-
-/* Checkerboard */
-.checkerboard-bg { background-size: 12px 12px; }
+.checkerboard-bg { background-size: 10px 10px; }
+.synced-tag { font-size: 8px; color: var(--accent); font-weight: bold; }
