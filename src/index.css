@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap');
 
 :root {
-  --bg-primary: #f4f7fa;
+  --bg-primary: #f2f5f8;
   --bg-secondary: #ffffff;
   --bg-card: #ffffff;
-  --border-color: #cbd5e0;
-  --text-primary: #1a202c;
-  --text-secondary: #4a5568;
-  --text-muted: #718096;
-  --accent: #3182ce;
-  --accent-hover: #2b6cb0;
-  --success: #38a169;
-  --panel-radius: 8px;
-  --transition: all 0.2s ease;
+  --border-color: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --success: #16a34a;
+  --panel-radius: 6px;
+  --transition: all 0.15s ease;
 }
 
 * {
@@ -25,98 +25,100 @@ body {
   font-family: 'Inter', 'Noto Sans JP', sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
-  min-height: 100vh;
-  overflow: auto;
-  font-size: 14px;
+  height: 100vh;
+  overflow: hidden; /* スクロールを原則禁止に */
+  font-size: 13px; /* 小さめのフォント */
+  line-height: 1.4;
 }
 
 #root {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 .app {
-  flex: 1;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
+/* ========== Header (極限まで細く) ========== */
 .app-header.compact {
-  height: 48px;
-  padding: 0 20px;
+  height: 36px;
+  padding: 0 16px;
   background: #ffffff;
-  border-bottom: 2px solid var(--accent);
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
-  gap: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  gap: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
   flex-shrink: 0;
 }
 
 .app-header h1 {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 800;
   color: var(--accent);
 }
 
+/* ========== Main Layout ========== */
 .main-layout.compact {
   flex: 1;
   display: flex;
-  padding: 12px;
-  gap: 16px;
-  min-width: 1200px;
-  margin: 0 auto;
+  padding: 8px;
+  gap: 8px;
+  overflow: hidden; /* 子要素にてスクロール制御 */
 }
 
-/* ========== Panels ========== */
+/* ========== Panels (余白を最小限に) ========== */
 .panel.compact {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--panel-radius);
-  padding: 12px;
-  margin-bottom: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  padding: 8px;
+  margin-bottom: 8px;
 }
 
 .panel-title {
   font-size: 11px;
   font-weight: 800;
   color: var(--text-muted);
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   text-transform: uppercase;
-  border-bottom: 1px solid #edf2f7;
-  padding-bottom: 4px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
-/* ========== Sidebars ========== */
+/* ========== Sidebars (スリム化 & 個別スクロール) ========== */
 .sidebar-left,
 .sidebar-right {
-  width: 250px;
+  width: 210px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  overflow-y: auto; /* サイドバー内のみスクロール */
+  padding-right: 4px;
 }
 
-/* ========== Canvas Area ========== */
+/* ========== Canvas Area (画面に収まるよう自動縮小) ========== */
 .canvas-area {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #d1d9e6;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+  background: #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+  overflow: hidden;
 }
 
 .canvas-container {
   display: flex;
-  gap: 20px;
+  gap: 12px;
   align-items: center;
 }
 
@@ -124,26 +126,23 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
 }
 
 .canvas-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  color: #4a5568;
-  background: white;
-  padding: 2px 10px;
-  border-radius: 20px;
+  color: #64748b;
+  margin-bottom: 4px;
 }
 
 .canvas-frame {
-  width: 480px;
-  height: 480px;
+  /* 画面の高さに応じて動的に縮小するように設定 (100vh - ヘッダー - 余白など) */
+  width: min(480px, 45vh); 
+  height: min(480px, 45vh);
   background: #fff;
   border: 1px solid #fff;
   border-radius: 4px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-  cursor: crosshair;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .canvas-frame canvas {
@@ -151,82 +150,14 @@ body {
   height: 100%;
 }
 
-/* ========== Toggle Switch - RE-IMPLEMENTED to be clickable ========== */
-.toggle-row.compact {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 0;
-}
-
-.toggle-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-primary);
-  cursor: pointer;
-}
-
-.toggle-switch {
-  position: relative;
-  width: 44px;
-  height: 24px;
-  display: inline-block;
-}
-
-/* Make input occupy full area but invisible so it catches all clicks */
-.toggle-switch input {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  margin: 0;
-  cursor: pointer;
-  z-index: 2;
-}
-
-.toggle-slider {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #cbd5e0;
-  transition: .2s;
-  border-radius: 24px;
-  pointer-events: none; /* Let clicks pass to the input */
-}
-
-.toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .2s;
-  border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-input:checked + .toggle-slider {
-  background-color: var(--success);
-}
-
-input:checked + .toggle-slider:before {
-  transform: translateX(20px);
-}
-
-input:focus + .toggle-slider {
-  box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.4);
-}
-
 /* ========== Buttons ========== */
 .btn {
-  padding: 8px 16px;
-  font-size: 13px;
+  padding: 6px 12px;
+  font-size: 12px;
   font-weight: 600;
-  border: 1px solid var(--border-color);
-  background: white;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
+  transition: var(--transition);
 }
 
 .btn-primary {
@@ -235,50 +166,58 @@ input:focus + .toggle-slider {
   border: none;
 }
 
-.btn-primary:hover {
-  background: var(--accent-hover);
-}
-
 .btn-save-large {
   width: 100%;
-  padding: 16px;
-  font-size: 16px;
-  font-weight: 800;
-  margin-top: 10px;
+  padding: 10px;
+  font-size: 14px;
+  margin-top: 6px;
 }
 
 .btn-apply {
   width: 100%;
-  margin-top: 10px;
-  background: #f1f5f9;
-  color: var(--text-secondary);
+  margin-top: 4px;
+  padding: 4px;
+  font-size: 11px;
 }
 
-.btn-icon { width: 44px; height: 44px; font-size: 20px; }
+.btn-icon { width: 32px; height: 32px; font-size: 16px; }
 
-/* ========== DPAD ========== */
+/* ========== Toggle Switch  ========== */
+.toggle-switch {
+  width: 36px; height: 20px;
+}
+.toggle-slider:before { height: 16px; width: 16px; left: 2px; bottom: 2px; }
+input:checked + .toggle-slider:before { transform: translateX(16px); }
+
+/* ========== DPAD (もっとコンパクトに) ========== */
 .dpad {
-  display: grid;
-  grid-template-columns: repeat(3, 44px);
-  grid-template-rows: repeat(3, 44px);
-  gap: 6px;
+  grid-template-columns: repeat(3, 32px);
+  grid-template-rows: repeat(3, 32px);
+  gap: 2px;
 }
+.offset-display { font-size: 11px; margin-top: 4px; }
 
-.offset-display span { color: var(--accent); font-weight: 800; font-family: monospace; }
-
-/* Forms */
+/* Forms (入力をスリムに) */
 .form-input, .form-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
+  padding: 6px;
+  font-size: 13px;
 }
+.form-label { font-size: 10px; }
+.form-group.compact { margin-bottom: 6px; }
 
-.checkerboard-bg {
-  background-image:
-    linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
-    linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
-    linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
-  background-size: 16px 16px;
+/* Save Panel */
+.radio-pill { padding: 4px; font-size: 11px; }
+.save-hint { font-size: 10px; margin-top: 4px; }
+
+/* Checkerboard */
+.checkerboard-bg { background-size: 12px 12px; }
+
+/* 極低解像度対応 */
+@media (max-height: 600px) {
+  .canvas-frame { width: 300px; height: 300px; }
+  .panel.compact { padding: 4px; }
+  .sidebar-left, .sidebar-right { width: 180px; }
+}
+@media (max-width: 1200px) {
+  .main-layout.compact { overflow-x: auto; }
 }
