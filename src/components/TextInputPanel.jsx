@@ -8,6 +8,8 @@ export default function TextInputPanel({
 }) {
   const [searchTerm, setSearchTerm] = useState('');
 
+  const generics = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
+
   const defaultFonts = [
     { value: 'serif', label: 'セリフ (明朝系)' },
     { value: 'sans-serif', label: 'ゴシック (サンセリフ系)' },
@@ -106,13 +108,25 @@ export default function TextInputPanel({
             className="form-select"
             value={font}
             onChange={(e) => onFontChange(e.target.value)}
-            style={{ fontFamily: filteredFonts.find(f => f.value === font) ? `"${font}"` : 'inherit' }}
+            style={{ 
+              fontFamily: generics.includes(font) ? font : `"${font}"`,
+              height: '32px'
+            }}
           >
             {filteredFonts.length === 0 ? (
               <option disabled>該当なし</option>
             ) : (
               filteredFonts.map(f => (
-                <option key={f.value} value={f.value}>{f.label}</option>
+                <option 
+                  key={f.value} 
+                  value={f.value}
+                  style={{ 
+                    fontFamily: generics.includes(f.value) ? f.value : `"${f.value}"`,
+                    fontSize: '14px'
+                  }}
+                >
+                  {f.label}
+                </option>
               ))
             )}
           </select>
