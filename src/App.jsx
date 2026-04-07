@@ -47,15 +47,32 @@ function App() {
       setFontLoadingStatus('loading');
       try {
         const fonts = await window.queryLocalFonts();
-        // 重複を除去しつつ、情報を整理 (fullNameをキーにする)
         const fontMap = new Map();
+
         fonts.forEach(f => {
-          if (!fontMap.has(f.fullName)) {
-            fontMap.set(f.fullName, {
-              value: f.fullName,
-              label: f.fullName,
-              family: f.family,
-              style: f.style
+          const fullName = f.fullName || '';
+          const family = f.family || '';
+          const style = f.style || '';
+          const psName = f.postscriptName || '';
+
+          // システムフォントや隠しフォントを簡易的にフィルタリング
+          if (psName.startsWith('.') || psName.includes('LastResort')) return;
+
+          // ユニークなIDを生成 (PostScriptNameがあればそれがベスト)
+          const id = psName || `${family}-${style}-${fullName}`;
+          
+          // 表示用のラベルを作成 (fullNameがfamilyと同じならstyleを追記して区別しやすくする)
+          let label = fullName;
+          if (!label || label === family) {
+            label = style ? `${family} (${style})` : family;
+          }
+
+          if (!fontMap.has(id)) {
+            fontMap.set(id, {
+              value: id, // valueもユニークなIDにする
+              label: label,
+              family: family,
+              style: style
             });
           }
         });

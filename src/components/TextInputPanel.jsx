@@ -19,7 +19,13 @@ export default function TextInputPanel({
   ];
 
   const allFonts = useMemo(() => {
-    return localFonts.length > 0 ? [...defaultFonts, ...localFonts] : defaultFonts;
+    if (localFonts.length === 0) return defaultFonts;
+    
+    // localFontsにあるものはdefaultFontsから引く (valueで比較)
+    const localValues = new Set(localFonts.map(f => f.value));
+    const filteredDefaults = defaultFonts.filter(f => !localValues.has(f.value));
+    
+    return [...filteredDefaults, ...localFonts];
   }, [localFonts]);
 
   const filteredFonts = useMemo(() => {
@@ -65,9 +71,9 @@ export default function TextInputPanel({
                 {fontLoadingStatus === 'loading' ? '⏳ 読み込み中...' : 
                  fontLoadingStatus === 'loaded' ? '🔄 再読み込み' : '📥 PCフォント読込'}
               </button>
-              {localFonts.length > 0 && (
-                <div style={{ fontSize: '9px', color: '#666', display: 'flex', alignItems: 'center' }}>
-                  {localFonts.length}個
+              {allFonts.length > 0 && (
+                <div style={{ fontSize: '9px', color: '#666', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+                  {searchTerm ? `${filteredFonts.length}/${allFonts.length}` : allFonts.length}個
                 </div>
               )}
             </div>
