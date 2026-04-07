@@ -9,8 +9,8 @@ import './App.css';
 
 function App() {
   // Text states
-  const [baseText, setBaseText] = useState('A');
-  const [partText, setPartText] = useState('B');
+  const [baseText, setBaseText] = useState('王');
+  const [partText, setPartText] = useState('犬');
   
   // Design states
   const [font, setFont] = useState('sans-serif');
