@@ -19,7 +19,8 @@ const EditCanvas = forwardRef(function EditCanvas({
 
     if (partText) {
       ctx.save();
-      const fontStyle = font.includes(' ') ? `"${font}"` : font;
+      const generics = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
+      const fontStyle = generics.includes(font) ? font : `"${font}"`;
       ctx.font = `${fontSize}px ${fontStyle}`;
       ctx.fillStyle = '#000000';
       ctx.textAlign = 'center';

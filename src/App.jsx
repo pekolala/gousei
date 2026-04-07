@@ -55,22 +55,20 @@ function App() {
           const style = f.style || '';
           const psName = f.postscriptName || '';
 
-          // システムフォントや隠しフォントを簡易的にフィルタリング
           if (psName.startsWith('.') || psName.includes('LastResort')) return;
 
-          // ユニークなIDを生成 (PostScriptNameがあればそれがベスト)
-          const id = psName || `${family}-${style}-${fullName}`;
+          // ブラウザが認識しやすい「名前」をベースにする
+          let displayName = fullName || (style ? `${family} ${style}` : family);
           
-          // 表示用のラベルを作成 (fullNameがfamilyと同じならstyleを追記して区別しやすくする)
-          let label = fullName;
-          if (!label || label === family) {
-            label = style ? `${family} (${style})` : family;
-          }
+          // 万が一名前が空、または重複している場合の回避策
+          if (!displayName) displayName = psName || 'Unknown Font';
+          
+          const uniqueId = psName || displayName; // キーはPSNameで保持
 
-          if (!fontMap.has(id)) {
-            fontMap.set(id, {
-              value: id, // valueもユニークなIDにする
-              label: label,
+          if (!fontMap.has(uniqueId)) {
+            fontMap.set(uniqueId, {
+              value: displayName, // valueを「ブラウザが認識できる名前」にする
+              label: displayName,
               family: family,
               style: style
             });

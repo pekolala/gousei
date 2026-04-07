@@ -17,7 +17,8 @@ export default function CompositionCanvas({
     // Draw base text (background layer)
     if (baseText) {
       ctx.save();
-      const fontStyle = font.includes(' ') ? `"${font}"` : font;
+      const generics = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
+      const fontStyle = generics.includes(font) ? font : `"${font}"`;
       ctx.font = `${fontSize}px ${fontStyle}`;
       ctx.fillStyle = '#1a1a1a'; // 少し柔らかい黒
       ctx.textAlign = 'center';
