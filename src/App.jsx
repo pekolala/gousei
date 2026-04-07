@@ -27,6 +27,7 @@ function App() {
 
   // Local Font state
   const [localFonts, setLocalFonts] = useState([]);
+  const [fontLoadingStatus, setFontLoadingStatus] = useState('idle'); // idle, loading, loaded, error
 
   const editCanvasRef = useRef(null);
 
@@ -43,13 +44,29 @@ function App() {
 
   const handleLoadLocalFonts = async () => {
     if (window.queryLocalFonts) {
+      setFontLoadingStatus('loading');
       try {
         const fonts = await window.queryLocalFonts();
-        const uniqueFonts = Array.from(new Set(fonts.map(f => f.fullName)))
-          .sort()
-          .map(name => ({ value: name, label: name }));
-        setLocalFonts(uniqueFonts);
+        // 重複を除去しつつ、情報を整理 (fullNameをキーにする)
+        const fontMap = new Map();
+        fonts.forEach(f => {
+          if (!fontMap.has(f.fullName)) {
+            fontMap.set(f.fullName, {
+              value: f.fullName,
+              label: f.fullName,
+              family: f.family,
+              style: f.style
+            });
+          }
+        });
+
+        const sortedFonts = Array.from(fontMap.values())
+          .sort((a, b) => a.label.localeCompare(b.label, 'ja'));
+        
+        setLocalFonts(sortedFonts);
+        setFontLoadingStatus('loaded');
       } catch (err) {
+        setFontLoadingStatus('error');
         if (err.name !== 'AbortError') {
           console.error('Font access failed', err);
           alert('フォントの取得に失敗しました。アクセスを許可してください。');
@@ -80,6 +97,7 @@ function App() {
             onFontSizeChange={setFontSize}
             localFonts={localFonts}
             onLoadFonts={handleLoadLocalFonts}
+            fontLoadingStatus={fontLoadingStatus}
             previewChar={baseText}
           />
           <SavePanel
@@ -133,6 +151,7 @@ function App() {
             fontSize={fontSize}
             onFontSizeChange={setFontSize}
             localFonts={localFonts}
+            fontLoadingStatus={fontLoadingStatus}
             synced={true}
             previewChar={partText}
           />

@@ -1,9 +1,13 @@
+import { useState, useMemo } from 'react';
+
 export default function TextInputPanel({
   label, text, onTextChange,
   font, onFontChange, fontSize, onFontSizeChange,
   localFonts = [], synced, previewChar,
-  onLoadFonts // フォント読み込み用コールバックを追加
+  onLoadFonts, fontLoadingStatus
 }) {
+  const [searchTerm, setSearchTerm] = useState('');
+
   const defaultFonts = [
     { value: 'serif', label: 'セリフ (明朝系)' },
     { value: 'sans-serif', label: 'ゴシック (サンセリフ系)' },
@@ -14,7 +18,18 @@ export default function TextInputPanel({
     { value: 'Arial Black', label: 'Arial Black' },
   ];
 
-  const currentFonts = localFonts.length > 0 ? [...defaultFonts, ...localFonts] : defaultFonts;
+  const allFonts = useMemo(() => {
+    return localFonts.length > 0 ? [...defaultFonts, ...localFonts] : defaultFonts;
+  }, [localFonts]);
+
+  const filteredFonts = useMemo(() => {
+    if (!searchTerm) return allFonts;
+    const lowerSearch = searchTerm.toLowerCase();
+    return allFonts.filter(f => 
+      f.label.toLowerCase().includes(lowerSearch) || 
+      (f.family && f.family.toLowerCase().includes(lowerSearch))
+    );
+  }, [allFonts, searchTerm]);
 
   const handleApply = () => {
     console.log(`${label} の設定を反映しました`);
@@ -36,15 +51,39 @@ export default function TextInputPanel({
         />
       </div>
 
-      {/* ユーザー指定の位置: テキスト入力とフォントの間にボタンを配置 */}
-      {!synced && localFonts.length === 0 && onLoadFonts && window.queryLocalFonts && (
-        <button 
-          className="btn btn-primary btn-sm" 
-          onClick={onLoadFonts}
-          style={{ width: '100%', marginBottom: '10px', padding: '6px', fontSize: '11px' }}
-        >
-          📥 PC内のフォントを読み込む
-        </button>
+      {/* フォント読み込み・検索エリア */}
+      {!synced && (
+        <div className="font-control-area" style={{ marginBottom: '8px' }}>
+          {window.queryLocalFonts && (
+            <div style={{ display: 'flex', gap: '4px', marginBottom: '4px' }}>
+              <button 
+                className="btn btn-sm" 
+                onClick={onLoadFonts}
+                disabled={fontLoadingStatus === 'loading'}
+                style={{ flex: 1, padding: '4px', fontSize: '10px' }}
+              >
+                {fontLoadingStatus === 'loading' ? '⏳ 読み込み中...' : 
+                 fontLoadingStatus === 'loaded' ? '🔄 再読み込み' : '📥 PCフォント読込'}
+              </button>
+              {localFonts.length > 0 && (
+                <div style={{ fontSize: '9px', color: '#666', display: 'flex', alignItems: 'center' }}>
+                  {localFonts.length}個
+                </div>
+              )}
+            </div>
+          )}
+          
+          {localFonts.length > 0 && (
+            <input
+              type="text"
+              className="form-input search-input"
+              placeholder="フォントを検索..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ fontSize: '10px', height: '24px' }}
+            />
+          )}
+        </div>
       )}
 
       {/* フォント選択欄 */}
@@ -54,17 +93,22 @@ export default function TextInputPanel({
         </label>
         {synced ? (
           <div className="form-select" style={{ opacity: 0.7, pointerEvents: 'none', background: '#f8f9fa' }}>
-            {currentFonts.find(f => f.value === font)?.label || font}
+            {allFonts.find(f => f.value === font)?.label || font}
           </div>
         ) : (
           <select
             className="form-select"
             value={font}
             onChange={(e) => onFontChange(e.target.value)}
+            style={{ fontFamily: filteredFonts.find(f => f.value === font) ? `"${font}"` : 'inherit' }}
           >
-            {currentFonts.map(f => (
-              <option key={f.value} value={f.value}>{f.label}</option>
-            ))}
+            {filteredFonts.length === 0 ? (
+              <option disabled>該当なし</option>
+            ) : (
+              filteredFonts.map(f => (
+                <option key={f.value} value={f.value}>{f.label}</option>
+              ))
+            )}
           </select>
         )}
       </div>
