@@ -87,7 +87,17 @@ function App() {
         });
 
         const sortedFonts = Array.from(fontMap.values())
-          .sort((a, b) => a.label.localeCompare(b.label, 'ja'));
+          .sort((a, b) => {
+            // 日本語（ひらがな・カタカナ・漢字）が含まれるものを優先的に上に持ってくる
+            const jpRegex = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/;
+            const aHasJP = jpRegex.test(a.label);
+            const bHasJP = jpRegex.test(b.label);
+            
+            if (aHasJP && !bHasJP) return -1;
+            if (!aHasJP && bHasJP) return 1;
+            
+            return a.label.localeCompare(b.label, 'ja');
+          });
         
         setLocalFonts(sortedFonts);
         setFontLoadingStatus('loaded');

@@ -11,13 +11,14 @@ export default function TextInputPanel({
   const generics = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
 
   const defaultFonts = [
-    { value: 'serif', label: 'セリフ (明朝系)' },
     { value: 'sans-serif', label: 'ゴシック (サンセリフ系)' },
-    { value: 'Georgia', label: 'Georgia' },
-    { value: 'Times New Roman', label: 'Times New Roman' },
-    { value: 'Impact', label: 'Impact' },
-    { value: 'Courier New', label: 'Courier New' },
-    { value: 'Arial Black', label: 'Arial Black' },
+    { value: 'serif', label: 'セリフ (明朝系)' },
+    { value: 'Meiryo, "メイリオ"', label: 'メイリオ' },
+    { value: '"Yu Gothic", "游ゴシック"', label: '游ゴシック' },
+    { value: '"MS Gothic", "ＭＳ ゴシック"', label: 'ＭＳ ゴシック' },
+    { value: '"MS Mincho", "ＭＳ 明朝"', label: 'ＭＳ 明朝' },
+    { value: '"Yu Mincho", "游明朝"', label: '游明朝' },
+    { value: 'monospace', label: '等幅フォント' },
     // イワタ書体の一般的な候補を追加
     { value: 'I-OTF-IwataMincho-Std-R', label: 'イワタ明朝体 (推定)' },
     { value: 'Iwata Kaisho R', label: 'イワタ楷書体 R (推定)' },
