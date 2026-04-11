@@ -33,10 +33,15 @@ export default function TextInputPanel({
   const filteredFonts = useMemo(() => {
     if (!searchTerm) return allFonts;
     const lowerSearch = searchTerm.toLowerCase();
-    return allFonts.filter(f => 
-      f.label.toLowerCase().includes(lowerSearch) || 
-      (f.family && f.family.toLowerCase().includes(lowerSearch))
-    );
+    return allFonts.filter(f => {
+      // App.jsx で作成した searchText を優先して利用
+      if (f.searchText) return f.searchText.includes(lowerSearch);
+      // フォールバック
+      return (
+        f.label.toLowerCase().includes(lowerSearch) || 
+        (f.family && f.family.toLowerCase().includes(lowerSearch))
+      );
+    });
   }, [allFonts, searchTerm]);
 
   const handleApply = () => {
@@ -104,32 +109,40 @@ export default function TextInputPanel({
             {allFonts.find(f => f.value === font)?.label || font}
           </div>
         ) : (
-          <select
-            className="form-select"
-            value={font}
-            onChange={(e) => onFontChange(e.target.value)}
-            style={{ 
-              fontFamily: generics.includes(font) ? font : `"${font}"`,
-              height: '32px'
-            }}
-          >
-            {filteredFonts.length === 0 ? (
-              <option disabled>該当なし</option>
-            ) : (
-              filteredFonts.map(f => (
-                <option 
-                  key={f.value} 
-                  value={f.value}
-                  style={{ 
-                    fontFamily: generics.includes(f.value) ? f.value : `"${f.value}"`,
-                    fontSize: '14px'
-                  }}
-                >
-                  {f.label}
-                </option>
-              ))
+          <>
+            <select
+              className="form-select"
+              value={font}
+              onChange={(e) => onFontChange(e.target.value)}
+              style={{ 
+                fontFamily: (generics.includes(font) || font.includes('"')) ? font : `"${font}"`,
+                height: '32px'
+              }}
+            >
+              {filteredFonts.length === 0 ? (
+                <option disabled>該当なし</option>
+              ) : (
+                filteredFonts.map(f => (
+                  <option 
+                    key={f.value} 
+                    value={f.value}
+                    style={{ 
+                      fontFamily: (generics.includes(f.value) || f.value.includes('"')) ? f.value : `"${f.value}"`,
+                      fontSize: '14px'
+                    }}
+                  >
+                    {f.label}
+                  </option>
+                ))
+              )}
+            </select>
+            {/* 選択中のフォント詳細情報 (デバッグ・確認用) */}
+            {localFonts.length > 0 && font && !generics.includes(font) && (
+              <div style={{ fontSize: '8px', color: '#888', marginTop: '2px', lineHeight: '1.2' }}>
+                ID: {allFonts.find(f => f.value === font)?.psName || 'N/A'}
+              </div>
             )}
-          </select>
+          </>
         )}
       </div>
 
@@ -151,7 +164,7 @@ export default function TextInputPanel({
 
       {previewChar && (
         <div className="font-preview compact" style={{ height: 40 }}>
-          <span className="font-preview-char" style={{ fontFamily: `"${font}", ${font}`, fontSize: '24px' }}>
+          <span className="font-preview-char" style={{ fontFamily: (generics.includes(font) || font.includes('"')) ? font : `"${font}"`, fontSize: '24px' }}>
             {previewChar}
           </span>
         </div>

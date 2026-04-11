@@ -57,20 +57,30 @@ function App() {
 
           if (psName.startsWith('.') || psName.includes('LastResort')) return;
 
-          // ブラウザが認識しやすい「名前」をベースにする
-          let displayName = fullName || (style ? `${family} ${style}` : family);
+          // 表示用の名前
+          const displayName = fullName || (style ? `${family} ${style}` : family) || psName;
           
-          // 万が一名前が空、または重複している場合の回避策
-          if (!displayName) displayName = psName || 'Unknown Font';
+          // CSS用のフォールバックリストを作成 (引用符で囲む)
+          const namePool = [];
+          if (fullName) namePool.push(fullName);
+          if (family) namePool.push(family);
+          if (psName) namePool.push(psName);
+          // 重複を排除しつつ順序を維持
+          const uniqueNames = [...new Set(namePool)];
+          const cssValue = uniqueNames.map(n => `"${n}"`).join(', ');
           
-          const uniqueId = psName || displayName; // キーはPSNameで保持
+          // PS名があればそれをキーにし、なければ名前で代用
+          const uniqueId = psName || fullName || displayName;
 
           if (!fontMap.has(uniqueId)) {
             fontMap.set(uniqueId, {
-              value: displayName, // valueを「ブラウザが認識できる名前」にする
+              value: cssValue, // CSSで直接使える形式を値にする
               label: displayName,
               family: family,
-              style: style
+              style: style,
+              psName: psName,
+              // 検索用テキスト
+              searchText: `${displayName} ${family} ${psName} ${style}`.toLowerCase()
             });
           }
         });
