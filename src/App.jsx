@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import CompositionCanvas from './components/CompositionCanvas';
 import EditCanvas from './components/EditCanvas';
 import TextInputPanel from './components/TextInputPanel';
