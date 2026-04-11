@@ -97,6 +97,30 @@ export default function TextInputPanel({
             </div>
           )}
           
+          {/* フォントファイル直接アップロード (イワタ書体などの対策) */}
+          <div className="font-upload-area" style={{ marginBottom: '8px' }}>
+            <label className="btn btn-sm" style={{ display: 'block', textAlign: 'center', fontSize: '10px', padding: '4px', background: '#e0f2fe', color: '#0369a1', cursor: 'pointer', border: '1px solid #bae6fd' }}>
+              📁 フォントファイルを直接選ぶ (OTF/TTF)
+              <input 
+                type="file" 
+                accept=".otf,.ttf,.woff,.woff2" 
+                style={{ display: 'none' }} 
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file && onLoadFonts) {
+                    // App.jsx 側のアップロード処理を呼び出す (props経由で渡すように変更が必要)
+                    // ここではイベントを親に伝える
+                    const event = new CustomEvent('font-upload', { detail: file });
+                    window.dispatchEvent(event);
+                  }
+                }}
+              />
+            </label>
+            <div style={{ fontSize: '8px', color: '#666', marginTop: '2px', textAlign: 'center' }}>
+              ※PCから取得できない場合はファイルを直接選択してください
+            </div>
+          </div>
+          
           {localFonts.length > 0 && (
             <input
               type="text"

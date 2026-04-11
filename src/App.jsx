@@ -113,6 +113,47 @@ function App() {
     }
   };
 
+  // フォントファイルアップロードのハンドリング
+  const [useUpload, setUseUpload] = useState(0); // リスト更新用のトリガー
+  useEffect(() => {
+    const handleUpload = async (e) => {
+      const file = e.detail;
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const buffer = event.target.result;
+        // ファイル名をそのまま使うと衝突の可能性があるためユニークな名前を作成
+        const fontId = `Uploaded_${Date.now()}`;
+        const fontName = file.name.split('.')[0];
+        const fontFace = new FontFace(fontId, buffer);
+        
+        try {
+          await fontFace.load();
+          document.fonts.add(fontFace);
+          
+          const newFontEntry = {
+            value: `"${fontId}"`, // CSS用
+            label: `📂 ${fontName}`,
+            family: fontId,
+            style: 'Regular',
+            psName: fontId,
+            searchText: `${fontName} uploaded custom`.toLowerCase()
+          };
+          
+          setLocalFonts(prev => [newFontEntry, ...prev]);
+          setFont(`"${fontId}"`);
+          alert(`フォント「${fontName}」の読み込みに成功しました。\n(このページを開いている間だけ有効です)`);
+        } catch (err) {
+          console.error('Font load error:', err);
+          alert('フォントファイルの読み込みに失敗しました。対応していない形式か、ファイルが破損している可能性があります。');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    };
+
+    window.addEventListener('font-upload', handleUpload);
+    return () => window.removeEventListener('font-upload', handleUpload);
+  }, []); // 初回のみ登録
+
   return (
     <div className="app">
       <header className="app-header compact">
