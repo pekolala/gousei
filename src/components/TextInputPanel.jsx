@@ -18,6 +18,11 @@ export default function TextInputPanel({
     { value: 'Impact', label: 'Impact' },
     { value: 'Courier New', label: 'Courier New' },
     { value: 'Arial Black', label: 'Arial Black' },
+    // イワタ書体の一般的な候補を追加
+    { value: 'I-OTF-IwataMincho-Std-R', label: 'イワタ明朝体 (推定)' },
+    { value: 'Iwata Kaisho R', label: 'イワタ楷書体 R (推定)' },
+    { value: 'Rイワタ楷書体', label: 'Rイワタ楷書体 (推定)' },
+    { value: 'I-OTF-IwataGothic-Std-M', label: 'イワタゴシック体 (推定)' },
   ];
 
   const allFonts = useMemo(() => {
@@ -67,6 +72,11 @@ export default function TextInputPanel({
       {/* フォント読み込み・検索エリア */}
       {!synced && (
         <div className="font-control-area" style={{ marginBottom: '8px' }}>
+          {!window.queryLocalFonts && (
+            <div style={{ fontSize: '9px', color: '#d32f2f', marginBottom: '4px', background: '#fff0f0', padding: '4px', borderRadius: '4px', border: '1px solid #ffcccc' }}>
+              ⚠️ お使いのブラウザは「PCフォントの取得」に対応していません。ChromeまたはEdge、またはPCの設定をご確認ください。
+            </div>
+          )}
           {window.queryLocalFonts && (
             <div style={{ display: 'flex', gap: '4px', marginBottom: '4px' }}>
               <button 
