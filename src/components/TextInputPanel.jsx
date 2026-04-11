@@ -110,38 +110,51 @@ export default function TextInputPanel({
           </div>
         ) : (
           <>
-            <select
-              className="form-select"
-              value={font}
-              onChange={(e) => onFontChange(e.target.value)}
-              style={{ 
-                fontFamily: (generics.includes(font) || font.includes('"')) ? font : `"${font}"`,
-                height: '32px'
-              }}
-            >
-              {filteredFonts.length === 0 ? (
-                <option disabled>該当なし</option>
-              ) : (
-                filteredFonts.map(f => (
-                  <option 
-                    key={f.value} 
-                    value={f.value}
-                    style={{ 
-                      fontFamily: (generics.includes(f.value) || f.value.includes('"')) ? f.value : `"${f.value}"`,
-                      fontSize: '14px'
-                    }}
-                  >
-                    {f.label}
-                  </option>
-                ))
-              )}
-            </select>
-            {/* 選択中のフォント詳細情報 (デバッグ・確認用) */}
-            {localFonts.length > 0 && font && !generics.includes(font) && (
-              <div style={{ fontSize: '8px', color: '#888', marginTop: '2px', lineHeight: '1.2' }}>
-                ID: {allFonts.find(f => f.value === font)?.psName || 'N/A'}
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <select
+                className="form-select"
+                value={font}
+                onChange={(e) => onFontChange(e.target.value)}
+                style={{ 
+                  fontFamily: (generics.includes(font) || font.includes('"')) ? font : `"${font}"`,
+                  height: '32px',
+                  flex: 1
+                }}
+              >
+                {filteredFonts.length === 0 ? (
+                  <option disabled>該当なし</option>
+                ) : (
+                  filteredFonts.map(f => (
+                    <option 
+                      key={f.value} 
+                      value={f.value}
+                      style={{ 
+                        fontFamily: (generics.includes(f.value) || f.value.includes('"')) ? f.value : `"${f.value}"`,
+                        fontSize: '14px'
+                      }}
+                    >
+                      {f.label}
+                    </option>
+                  ))
+                )}
+                <option value="custom">── 直接入力する ──</option>
+              </select>
+            </div>
+
+            {/* 手入力または選択中の詳細 */}
+            <div style={{ marginTop: '4px' }}>
+              <input
+                type="text"
+                className="form-input search-input"
+                placeholder="フォント名を直接指定 (例: IwataKaishoR-Regular)"
+                value={font.includes('"') ? font.replace(/"/g, '').split(',')[0] : font}
+                onChange={(e) => onFontChange(e.target.value)}
+                style={{ fontSize: '11px', height: '24px', background: '#fffbeb' }}
+              />
+              <div style={{ fontSize: '9px', color: '#999', marginTop: '1px' }}>
+                ※リストに出ない場合はここに正確な名前を入力してください
               </div>
-            )}
+            </div>
           </>
         )}
       </div>

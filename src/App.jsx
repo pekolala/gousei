@@ -55,7 +55,8 @@ function App() {
           const style = f.style || '';
           const psName = f.postscriptName || '';
 
-          if (psName.startsWith('.') || psName.includes('LastResort')) return;
+          // ほとんど制限をかけずにすべて取得する
+          if (psName.includes('LastResort')) return;
 
           // 表示用の名前
           const displayName = fullName || (style ? `${family} ${style}` : family) || psName;
